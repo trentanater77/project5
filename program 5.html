@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Data</title>
+    <!-- Include Handlebars from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+</head>
+<body>
+    <button id="citMajors">CIT Majors</button>
+    <button id="busMajors">Business Majors</button>
+    <div id="studentData"></div>
+
+    <script id="student-template" type="text/x-handlebars-template">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Major</th>
+                <th>Midterm</th>
+                <th>Final</th>
+            </tr>
+            {{#each students}}
+            <tr>
+                <td>{{this.name}}</td>
+                <td>{{this.major}}</td>
+                <td>{{this.midterm}}</td>
+                <td>{{this.final}}</td>
+            </tr>
+            {{/each}}
+        </table>
+    </script>
+
+    <!-- Your JavaScript file -->
+   <script>
+    document.getElementById('citMajors').addEventListener('click', function() {
+    loadData('CIT');
+});
+
+document.getElementById('busMajors').addEventListener('click', function() {
+    loadData('BUS');
+});
+
+function loadData(major) {
+    // Fetch data from the JSON file
+    fetch('cit5students.json')
+        .then(response => response.json())
+        .then(data => {
+            const filteredData = data.filter(student => student.major === major);
+            renderData(filteredData);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function renderData(data) {
+    const templateSource = document.getElementById('student-template').innerHTML;
+    const template = Handlebars.compile(templateSource);
+    const html = template({ students: data });
+    document.getElementById('studentData').innerHTML = html;
+}
+   </script>
+</body>
+</html>
